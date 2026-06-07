@@ -15,10 +15,20 @@ struct RootView: View {
     var body: some View {
         NavigationSplitView {
             ProjectsSidebar(selection: $selectedProject)
+
         } content: {
             DecisionsContent(project: selectedProject, selection: $selectedDecision)
+
         } detail: {
-            DecisionDetail(decision: selectedDecision)
+            if let selectedDecision {
+                DecisionDetail(decision: selectedDecision) { successor in
+                    self.selectedDecision = successor
+                    self.selectedProject = successor.project
+                }
+            } else {
+                Text("Select a decision")
+                    .foregroundStyle(.secondary)
+            }
         }
     }
 }

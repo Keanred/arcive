@@ -79,11 +79,77 @@ enum PreviewSamples {
         d5.createdAt = Calendar.current.date(byAdding: .day, value: -4, to: .now) ?? .now
         d5.tags = [infraTag, architectureTag]
 
+        let d1o1 = Option(title: "SwiftData")
+        d1o1.detail = "Apple's declarative persistence framework built on top of Core Data."
+        d1o1.pros = "Native SwiftUI @Query bindings; concise @Model macro; iCloud sync built in."
+        d1o1.cons = "iOS 17+ minimum; framework still maturing; some Core Data features missing."
+        d1o1.wasChosen = true
+        d1o1.decision = d1
+
+        let d1o2 = Option(title: "Core Data")
+        d1o2.detail = "Apple's mature object graph and persistence framework."
+        d1o2.pros = "Battle-tested; deep tooling and documentation; works on older OS versions."
+        d1o2.cons = "Verbose Objective-C-flavored API; weak SwiftUI integration without wrappers."
+        d1o2.decision = d1
+
+        let d1o3 = Option(title: "GRDB")
+        d1o3.detail = "Third-party Swift wrapper around SQLite with a Codable-friendly API."
+        d1o3.pros = "Fast; explicit SQL when you want it; no Objective-C runtime."
+        d1o3.cons = "External dependency; no iCloud sync story; manual SwiftUI plumbing."
+        d1o3.decision = d1
+
+        let d2o1 = Option(title: "NavigationSplitView")
+        d2o1.detail = "SwiftUI's first-party three-column container."
+        d2o1.pros = "Platform-correct on iPhone, iPad, and Mac; respects column visibility settings."
+        d2o1.cons = "Limited customization of transitions and column widths."
+        d2o1.wasChosen = true
+        d2o1.decision = d2
+
+        let d2o2 = Option(title: "NavigationStack with custom sidebar")
+        d2o2.detail = "Use NavigationStack for the detail column and hand-roll the sidebar."
+        d2o2.pros = "Total control over layout and animation."
+        d2o2.cons = "Reimplementing system behavior; feels less native on Mac."
+        d2o2.decision = d2
+
+        let d2o3 = Option(title: "UIKit/AppKit hybrid")
+        d2o3.detail = "Host SwiftUI inside a UISplitViewController / NSSplitViewController."
+        d2o3.pros = "Mature, well-understood split-view APIs."
+        d2o3.cons = "Two layout systems to reason about; sidebar/detail communication gets awkward."
+        d2o3.decision = d2
+
+        let d5o1 = Option(title: "Kafka")
+        d5o1.detail = "Distributed log-based event streaming platform."
+        d5o1.pros = "Industry standard; high throughput; rich ecosystem of connectors."
+        d5o1.cons = "Operational complexity; overkill at our current scale; needs ZooKeeper or KRaft."
+        d5o1.decision = d5
+
+        let d5o2 = Option(title: "NATS")
+        d5o2.detail = "Lightweight pub/sub messaging system."
+        d5o2.pros = "Simple to operate; low latency; clustering is straightforward."
+        d5o2.cons = "Smaller ecosystem; still another piece of infrastructure to run."
+        d5o2.decision = d5
+
+        let d5o3 = Option(title: "Postgres LISTEN/NOTIFY")
+        d5o3.detail = "Use Postgres's built-in pub/sub channels for inter-service events."
+        d5o3.pros = "Zero new infrastructure; transactional with existing data; easy to reason about."
+        d5o3.cons = "Not durable across listener disconnects; throughput ceiling; payloads capped at 8 KB."
+        d5o3.wasChosen = true
+        d5o3.decision = d5
+
         context.insert(d1)
         context.insert(d2)
         context.insert(d3)
         context.insert(d4)
         context.insert(d5)
+        context.insert(d1o1)
+        context.insert(d1o2)
+        context.insert(d1o3)
+        context.insert(d2o1)
+        context.insert(d2o2)
+        context.insert(d2o3)
+        context.insert(d5o1)
+        context.insert(d5o2)
+        context.insert(d5o3)
 
         return container
     }()

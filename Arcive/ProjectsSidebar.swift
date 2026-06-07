@@ -16,14 +16,45 @@ struct ProjectsSidebar: View {
     var body: some View {
         Text("Projects").padding(.horizontal)
         List(projects, selection: $selection) { project in
-            Text("\(project.name)")
+            @Bindable var project = project
+            TextField("Name", text: $project.name)
+                .textFieldStyle(.plain)
                 .tag(project)
                 .listRowInsets(EdgeInsets(top: 0, leading: 1, bottom: 0, trailing: 1))
                 .listRowSeparator(.hidden)
+                .swipeActions {
+                    Button(role: .destructive) {
+                        delete(project)
+                    } label: {
+                        Label("Delete", systemImage: "trash")
+                    }
+                }
+                .contextMenu {
+                    Button(role: .destructive) {
+                        delete(project)
+                    } label: {
+                        Label("Delete", systemImage: "trash")
+                    }
+                }
+        }
+        .onDeleteCommand {
+            guard let selected = selection else { return }
+            delete(selected)
         }
         Button("New Project", systemImage: "document.badge.plus.fill") {
-            modelContext.insert(Project(name: "Test", detail: "hello"))
+            addProject()
         }
+    }
+    
+    private func addProject() {
+        let project = Project(name: "New project")
+        modelContext.insert(project)
+        selection = project
+    }
+    
+    private func delete(_ project: Project) {
+        if selection == project { selection = nil }
+        modelContext.delete(project)
     }
 }
 

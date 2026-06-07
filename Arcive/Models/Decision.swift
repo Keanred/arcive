@@ -8,6 +8,12 @@
 import Foundation
 import SwiftData
 
+enum DecisionStatus: String, Codable, CaseIterable, Identifiable {
+    case proposed, accepted, rejected, deprecated, superseded
+    var id: String { rawValue }
+    var label: String { rawValue.capitalized }
+}
+
 @Model
 final class Decision {
     var title: String = ""
@@ -23,8 +29,8 @@ final class Decision {
     var project: Project?
 
     // One decision → many options considered. Inverse on this (to-many) side.
-    //@Relationship(deleteRule: .cascade, inverse: \Option.decision)
-    //var options: [Option] = []
+    @Relationship(deleteRule: .cascade, inverse: \Option.decision)
+    var options: [Option] = []
 
     // Self-referential: this decision supersedes an earlier one.
     // Kept ONE-directional on purpose (see note below).
@@ -37,4 +43,14 @@ final class Decision {
         self.title = title
         self.number = number
     }
+    
+    // "Has anything superseded this decision?"
+    func successor(in context: ModelContext) -> Decision? {
+        let id = persistentModelID
+        let descriptor = FetchDescriptor<Decision>(
+            predicate: #Predicate { $0.supersedes?.persistentModelID == id }
+        )
+        return try? context.fetch(descriptor).first
+    }
+
 }
