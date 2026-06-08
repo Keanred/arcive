@@ -24,4 +24,8 @@ final class Project {
         self.name = name
         self.detail = detail
     }
+
+    var nextDecisionNumber: Int {
+        (decisions.map(\.number).max() ?? 0) + 1
+    }
 }

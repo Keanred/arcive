@@ -9,6 +9,7 @@ import SwiftUI
 import SwiftData
 
 struct RootView: View {
+    @Environment(\.openWindow) private var openWindow
     @State private var selectedProject: Project?
     @State private var selectedDecision: Decision?
 
@@ -28,6 +29,13 @@ struct RootView: View {
             } else {
                 Text("Select a decision")
                     .foregroundStyle(.secondary)
+            }
+        }
+        .toolbar {
+            ToolbarItem {
+                Button("Tags", systemImage: "tag") {
+                    openWindow(id: "tags")
+                }
             }
         }
     }

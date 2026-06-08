@@ -125,7 +125,7 @@ struct DecisionsContent: View {
                 ToolbarSpacer(.fixed)
                 ToolbarItem {
                     Button {
-                        let decision = Decision(title: "New Decision", number: nextNumber(in: project))
+                        let decision = Decision(title: "New Decision", number: project.nextDecisionNumber)
                         modelContext.insert(decision)
                         decision.project = project
                     } label: {
@@ -140,26 +140,6 @@ struct DecisionsContent: View {
                 systemImage: "folder",
                 description: Text("Select a project from the sidebar to view its decisions.")
             )
-        }
-    }
-
-    func nextNumber(in project: Project) -> Int {
-        var highest = 0
-        for decision in project.decisions {
-            highest = max(highest, decision.number)
-        }
-        return highest + 1
-    }
-}
-
-extension DecisionStatus {
-    var color: Color {
-        switch self {
-        case .accepted:   .green
-        case .proposed:   .orange
-        case .rejected:   .red
-        case .deprecated: .secondary
-        case .superseded: .gray
         }
     }
 }

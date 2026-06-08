@@ -53,4 +53,31 @@ final class Decision {
         return try? context.fetch(descriptor).first
     }
 
+    // Accepted decisions in the same project that this one could validly supersede:
+    // excludes self and anything downstream in the supersession chain (cycle prevention).
+    func supersedesCandidates(in context: ModelContext) -> [Decision] {
+        let projectID = project?.persistentModelID
+        let descriptor = FetchDescriptor<Decision>(
+            predicate: #Predicate { d in
+                d.project?.persistentModelID == projectID
+            },
+            sortBy: [SortDescriptor(\.number)]
+        )
+        let all = (try? context.fetch(descriptor)) ?? []
+        let forbidden = forbiddenPredecessorIDs(in: context)
+        return all.filter { candidate in
+            candidate.status == .accepted && !forbidden.contains(candidate.persistentModelID)
+        }
+    }
+
+    private func forbiddenPredecessorIDs(in context: ModelContext) -> Set<PersistentIdentifier> {
+        var ids: Set<PersistentIdentifier> = [persistentModelID]
+        var cursor: Decision? = successor(in: context)
+        while let next = cursor {
+            if !ids.insert(next.persistentModelID).inserted { break }
+            cursor = next.successor(in: context)
+        }
+        return ids
+    }
+
 }

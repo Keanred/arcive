@@ -10,10 +10,28 @@ import SwiftData
 
 @main
 struct ArciveApp: App {
+    let modelContainer: ModelContainer
+
+    init() {
+        do {
+            modelContainer = try ModelContainer(
+                for: Project.self, Decision.self, Option.self, Tag.self
+            )
+        } catch {
+            fatalError("Failed to create model container: \(error)")
+        }
+    }
+
     var body: some Scene {
         WindowGroup {
             RootView()
         }
-        .modelContainer(for: [Project.self, Decision.self, Option.self, Tag.self])
+        .modelContainer(modelContainer)
+
+        Window("Tags", id: "tags") {
+            TagList()
+        }
+        .defaultSize(width: 500, height: 400)
+        .modelContainer(modelContainer)
     }
 }

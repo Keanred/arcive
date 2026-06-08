@@ -44,6 +44,7 @@ struct ProjectsSidebar: View {
         Button("New Project", systemImage: "document.badge.plus.fill") {
             addProject()
         }
+        .buttonStyle(.glassProminent)
     }
     
     private func addProject() {
